@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import Gallery from './components/Gallery'; // Import the Gallery component
 
 function App() {
   // State to store the list of tours
@@ -46,26 +47,14 @@ function App() {
     return <h1>Error: {error}</h1>;
   }
 
+  // Render the Gallery component with the tour data
   return (
     <div className="App">
       <h1>Tour Gallery</h1>
-      {/* Display a message if no tours are left */}
       {tours.length === 0 ? (
         <h2>No tours left</h2>
       ) : (
-        <div className="tour-list">
-          {/* Map over the tours and display each one in a card */}
-          {tours.map((tour) => (
-            <div key={tour.id} className="tour-card">
-              <img src={tour.image} alt={tour.name} className="tour-image" />
-              <h2>{tour.name}</h2>
-              <p>{tour.info}</p>
-              <p><strong>Price:</strong> ${tour.price}</p>
-              {/* Button to remove the tour */}
-              <button onClick={() => removeTour(tour.id)}>Not Interested</button>
-            </div>
-          ))}
-        </div>
+        <Gallery tours={tours} onRemove={removeTour} />
       )}
     </div>
   );
