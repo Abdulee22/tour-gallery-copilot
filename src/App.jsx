@@ -10,25 +10,26 @@ function App() {
   // State to handle errors during data fetching
   const [error, setError] = useState(null);
 
-  // Fetch tours from the API when the component mounts
-  useEffect(() => {
-    const fetchTours = async () => {
-      setLoading(true); // Set loading to true before fetching
-      try {
-        const response = await fetch('https://course-api.com/react-tours-project');
-        if (!response.ok) {
-          throw new Error('Failed to fetch tours'); // Handle HTTP errors
-        }
-        const data = await response.json();
-        setTours(data); // Update the tours state with fetched data
-        setError(null); // Clear any previous errors
-      } catch (err) {
-        setError(err.message); // Set the error message if fetching fails
-      } finally {
-        setLoading(false); // Set loading to false after fetching
+  // Fetch tours from the API when the component mounts or when refreshed
+  const fetchTours = async () => {
+    setLoading(true); // Set loading to true before fetching
+    try {
+      const response = await fetch('https://course-api.com/react-tours-project');
+      if (!response.ok) {
+        throw new Error('Failed to fetch tours'); // Handle HTTP errors
       }
-    };
+      const data = await response.json();
+      setTours(data); // Update the tours state with fetched data
+      setError(null); // Clear any previous errors
+    } catch (err) {
+      setError(err.message); // Set the error message if fetching fails
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
+  };
 
+  // Fetch tours when the component mounts
+  useEffect(() => {
     fetchTours();
   }, []); // Empty dependency array ensures this runs only once
 
@@ -47,12 +48,18 @@ function App() {
     return <h1>Error: {error}</h1>;
   }
 
-  // Render the Gallery component with the tour data
+  // Render the Gallery component with the tour data or a "Refresh" button if no tours are left
   return (
     <div className="App">
       <h1>Tour Gallery</h1>
       {tours.length === 0 ? (
-        <h2>No tours left</h2>
+        <div>
+          <h2>No tours left</h2>
+          {/* Button to refresh the tours */}
+          <button onClick={fetchTours} className="refresh-btn">
+            Refresh
+          </button>
+        </div>
       ) : (
         <Gallery tours={tours} onRemove={removeTour} />
       )}
